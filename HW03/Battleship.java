@@ -2,9 +2,9 @@ import java.util.Scanner;
 
 public class Battleship {
 	public static void main(String[] args) {
-        System.out.println("Welcome to Battleship!");
-        
         Scanner sc = new Scanner(System.in);
+
+        System.out.println("Welcome to Battleship!");
 
         char[][] player1 = new char[5][5];
         char[][] player2 = new char[5][5];
@@ -13,30 +13,7 @@ public class Battleship {
 
         for(int i = 0; i < 5; i++)
         {
-            System.out.println("Enter ship " + (i+1) + " location:");
-            String[] coordinates = (sc.nextLine()).trim().split("\\s");
-            try
-            {
-                int x = Integer.parseInt(coordinates[0]);
-                int y = Integer.parseInt(coordinates[1]);
-
-                if(player1[x][y]=='\u0000')
-                {
-                    player1[x][y] = '@';
-                }
-                else
-                {
-                    System.out.println("You already have a ship there. Choose different coordinates.");
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                System.out.println("Invalid coordinates. Choose different coordinates.");
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                System.out.println("Invalid coordinates. Choose different coordinates.");
-            }
+            addCoordinates(sc, i, player1);
         }
 
         for(int i = 0; i < 5; i++)
@@ -68,30 +45,7 @@ public class Battleship {
 
         for(int i = 0; i < 5; i++)
         {
-            System.out.println("Enter ship " + (i+1) + " location:");
-            String[] coordinates = (sc.nextLine()).trim().split("\\s");
-            try
-            {
-                int x = Integer.parseInt(coordinates[0]);
-                int y = Integer.parseInt(coordinates[1]);
-
-                if(player2[x][y]=='\u0000')
-                {
-                    player2[x][y] = '@';
-                }
-                else
-                {
-                    System.out.println("You already have a ship there. Choose different coordinates.");
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                System.out.println("Invalid coordinates. Choose different coordinates.");
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                System.out.println("Invalid coordinates. Choose different coordinates.");
-            }
+            addCoordinates(sc, i, player2);
         }
 
         for(int i = 0; i < 5; i++)
@@ -110,6 +64,49 @@ public class Battleship {
         }
 
         printBattleShip(player2);
+
+        char[][] targethistory_1 = new char[5][5];
+        char[][] targethistory_2 = new char[5][5];
+
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                targethistory_1[i][j] = player1[i][j];
+            }
+        }
+
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                targethistory_2[i][j] = player2[i][j];
+            }
+        }
+
+        int turn = 2;
+
+        do {
+            if(turn%2==0)
+            {
+                hitShip(sc, 1, 2, targethistory_2);
+            }
+            else
+            {
+                hitShip(sc, 2, 1, targethistory_1);
+            }
+
+            turn += 1;
+        } while(checkCharacter('@', targethistory_1) && checkCharacter('@', targethistory_2));
+
+        if(!checkCharacter('@', targethistory_1))
+        {
+            System.out.println("PLAYER 2 WON!");
+        }
+        else
+        {
+            System.out.println("PLAYER 1 WON");
+        }
 	}
 
 	// Use this method to print game boards to the console.
@@ -129,4 +126,90 @@ public class Battleship {
 			System.out.println("");
 		}
 	}
+
+
+    private static void addCoordinates(Scanner sc, int coordinate_no, char[][] player_coordinates)
+    {
+        System.out.println("Enter ship " + (coordinate_no+1) + " location:");
+        String[] coordinates = (sc.nextLine()).trim().split("\\s");
+        try
+        {
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+
+            if(player_coordinates[x][y]=='\u0000')
+            {
+                player_coordinates[x][y] = '@';
+            }
+            else
+            {
+                System.out.println("You already have a ship there. Choose different coordinates.");
+                addCoordinates(sc, coordinate_no, player_coordinates);
+            }
+        }
+        catch (NumberFormatException e)
+        {
+            System.out.println("Invalid coordinates. Choose different coordinates.");
+            addCoordinates(sc, coordinate_no, player_coordinates);
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            System.out.println("Invalid coordinates. Choose different coordinates.");
+            addCoordinates(sc, coordinate_no, player_coordinates);
+        }
+    }
+
+    private static boolean checkCharacter(char a, char[][] char_array)
+    {
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                if(char_array[i][j]=='@')
+                {
+                    return true;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static void hitShip(Scanner sc, int hitting_player, int victim_player, char[][] char_array)
+    {
+        System.out.println("Player " + hitting_player + ", enter hit row/column:");
+        String[] attack_coordinates = (sc.nextLine()).trim().split("\\s");
+        int x = Integer.parseInt(attack_coordinates[0]);
+        int y = Integer.parseInt(attack_coordinates[1]);
+        try
+        {
+            if(char_array[x][y] == 'X')
+            {
+                System.out.println("You already fired on this spot. Choose different coordinates.");
+                hitShip(sc, hitting_player, victim_player, char_array);
+            }
+            else if(char_array[x][y] == '@')
+            {
+                char_array[x][y] = 'X';
+                System.out.println("PLAYER " + hitting_player + " HIT PLAYER " + victim_player + "'s SHIP.");
+            }
+            else if(char_array[x][y] == '-')
+            {
+                char_array[x][y] = 'O';
+                System.out.println("PLAYER " + hitting_player + " MISSED!");
+            }
+
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            System.out.println("Invalid coordinates. Choose different coordinates.");
+            hitShip(sc, hitting_player, victim_player, char_array);
+
+        }
+    }
+
 }
