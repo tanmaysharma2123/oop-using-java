@@ -55,6 +55,61 @@ public class Battleship {
         }
 
         printBattleShip(player1);
+
+
+        // 100 blank lines...!
+        for(int i = 1; i <= 100; i++)
+        {
+            System.out.println("");
+        }
+
+
+        System.out.println("PLAYER 2, ENTER YOUR SHIPS'S COORDINATES.");
+
+        for(int i = 0; i < 5; i++)
+        {
+            System.out.println("Enter ship " + (i+1) + " location:");
+            String[] coordinates = (sc.nextLine()).trim().split("\\s");
+            try
+            {
+                int x = Integer.parseInt(coordinates[0]);
+                int y = Integer.parseInt(coordinates[1]);
+
+                if(player2[x][y]=='\u0000')
+                {
+                    player2[x][y] = '@';
+                }
+                else
+                {
+                    System.out.println("You already have a ship there. Choose different coordinates.");
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid coordinates. Choose different coordinates.");
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                System.out.println("Invalid coordinates. Choose different coordinates.");
+            }
+        }
+
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                if(player2[i][j]=='\u0000')
+                {
+                    player2[i][j] = '-';
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+
+        printBattleShip(player2);
 	}
 
 	// Use this method to print game boards to the console.
