@@ -65,6 +65,12 @@ public class Battleship {
 
         printBattleShip(player2);
 
+        // 100 blank lines...!
+        for(int i = 1; i <= 100; i++)
+        {
+            System.out.println("");
+        }
+
         char[][] targethistory_1 = new char[5][5];
         char[][] targethistory_2 = new char[5][5];
 
@@ -72,7 +78,7 @@ public class Battleship {
         {
             for(int j = 0; j < 5; j++)
             {
-                targethistory_1[i][j] = player1[i][j];
+                targethistory_1[i][j] = '-';
             }
         }
 
@@ -80,7 +86,7 @@ public class Battleship {
         {
             for(int j = 0; j < 5; j++)
             {
-                targethistory_2[i][j] = player2[i][j];
+                targethistory_2[i][j] = '-';
             }
         }
 
@@ -89,23 +95,27 @@ public class Battleship {
         do {
             if(turn%2==0)
             {
-                hitShip(sc, 1, 2, targethistory_2);
+                hitShip(sc, 1, 2, player2, targethistory_2);
+                printBattleShip(targethistory_2);
+                System.out.println("");
             }
             else
             {
-                hitShip(sc, 2, 1, targethistory_1);
+                hitShip(sc, 2, 1, player1, targethistory_1);
+                printBattleShip(targethistory_1);
+                System.out.println("");
             }
 
             turn += 1;
-        } while(checkCharacter('@', targethistory_1) && checkCharacter('@', targethistory_2));
+        } while(checkCharacter('@', player1) && checkCharacter('@', player2));
 
-        if(!checkCharacter('@', targethistory_1))
+        if(!checkCharacter('@', player1))
         {
-            System.out.println("PLAYER 2 WON!");
+            System.out.println("PLAYER 2 WINS! YOU SUNK ALL OF YOUR OPPONENT'S SHIPS!");
         }
         else
         {
-            System.out.println("PLAYER 1 WON");
+            System.out.println("PLAYER 1 WINS! YOU SUNK ALL OF YOUR OPPONENT'S SHIPS!");
         }
 	}
 
@@ -120,7 +130,7 @@ public class Battleship {
 				if (row == -1) {
 					System.out.print(column + " ");
 				} else {
-					System.out.print(player[row][column] + " ");
+					System.out.print(player[column][row] + " ");
 				}
 			}
 			System.out.println("");
@@ -179,35 +189,37 @@ public class Battleship {
         return false;
     }
 
-    private static void hitShip(Scanner sc, int hitting_player, int victim_player, char[][] char_array)
+    private static void hitShip(Scanner sc, int hitting_player, int victim_player, char[][] player_array, char[][] target_history)
     {
-        System.out.println("Player " + hitting_player + ", enter hit row/column:");
+        System.out.println("\n Player " + hitting_player + ", enter hit row/column:");
         String[] attack_coordinates = (sc.nextLine()).trim().split("\\s");
         int x = Integer.parseInt(attack_coordinates[0]);
         int y = Integer.parseInt(attack_coordinates[1]);
         try
         {
-            if(char_array[x][y] == 'X')
+            if(target_history[x][y] == 'X' || target_history[x][y] == 'O')
             {
-                System.out.println("You already fired on this spot. Choose different coordinates.");
-                hitShip(sc, hitting_player, victim_player, char_array);
+                System.out.println("\n You already fired on this spot. Choose different coordinates.");
+                hitShip(sc, hitting_player, victim_player, player_array, target_history);
             }
-            else if(char_array[x][y] == '@')
+            else if(player_array[x][y] == '@')
             {
-                char_array[x][y] = 'X';
-                System.out.println("PLAYER " + hitting_player + " HIT PLAYER " + victim_player + "'s SHIP.");
+                target_history[x][y] = 'X';
+                player_array[x][y] = 'X';
+                System.out.println("\n PLAYER " + hitting_player + " HIT PLAYER " + victim_player + "'s SHIP.");
             }
-            else if(char_array[x][y] == '-')
+            else if(player_array[x][y] == '-')
             {
-                char_array[x][y] = 'O';
-                System.out.println("PLAYER " + hitting_player + " MISSED!");
+                target_history[x][y] = 'O';
+                player_array[x][y] = 'O';
+                System.out.println("\n PLAYER " + hitting_player + " MISSED!");
             }
 
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
-            System.out.println("Invalid coordinates. Choose different coordinates.");
-            hitShip(sc, hitting_player, victim_player, char_array);
+            System.out.println("\n Invalid coordinates. Choose different coordinates.");
+            hitShip(sc, hitting_player, victim_player, player_array, target_history);
 
         }
     }
