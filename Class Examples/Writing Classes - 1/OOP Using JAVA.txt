@@ -1,0 +1,42 @@
+Instance Variables
+------------------
+An instance variable is not local to a specific method or block statement. It is declared at the class level, and that's why instance variables are also designated as class members.
+
+ANY VARIABLE OR METHOD THAT IS DECLARED IN THIS SCOPE IS CALLED A CLASS MEMEBER.
+
+A class might have multiple methods that represent different behaviours, and these methods may need to change the state of an object when invoked. Defining a variable in a class outside of a method gives all of the methods in the class the ability to change it instead of just one.
+
+__________________________________________________________________________________________________________________________________
+
+Visibility Modifiers (public & private)
+---------------------------------------
+Encapsulation - A class itself should govern how the instance variables of its objects are manipulated so that the objects operate as they are intended.
+
+Private Keyword - Enforces encapsulation by giving access to an instance variable to just the methods within its class. These methods can be trusted as they, like the instance variables, are members of the same class.
+
+Public Keyword - does the opposite of private. When applied to a member of a class, it allows an external class to have untethered access to that member. Due to encapsulation, instance variables should not be public, becuase, for e.g., to write a new class that creates an instance of Insect and does something silly, accidental, or malicious like directly set the weight variable of that instance to a negative number.
+
+__________________________________________________________________________________________________________________________________
+
+Constructors
+------------
+Constructor - The 'new' operator first operator first creates an instance of some class and then calls a special method, called the Constructor.
+
+It's the Constructor job to initialize the data or state of the new instance by giving values to its instance variables.
+
+Whenever any class is written, it is given a default constructor & it initializes each instance variable with default values:
+  -----Instance Variable Type------|--------Default type---------
+      numeric primitive types      |             0
+             boolean               |            false
+      class (object type)          |            null
+When we write Constructor, it must declare form of parameter that will accept these values from a caller of the constructor and then assign the values to the instance variables accordingly.
+
+The constructor is public since we ultimately want other classes to have the ability to create instances of our class.
+
+The Constructor has no return type, as they are the only kinds of methods that can be declared without one, and they have to be. If provided one, it will show compile error.
+ 
+The name of the Constructor must be the same as the class.
+
+The descriptive names we use in a constructor's formal parameters help determine which order to put the actual parameter.
+
+__________________________________________________________________________________________________________________________________
